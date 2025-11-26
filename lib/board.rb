@@ -11,30 +11,28 @@ class Board
   def initialize
     @grid = Array.new(0)
     @guesses_history = Array.new(12) { [] }
-    @hints = Array.new(12) { [] }
+    @hints = Array.new(12)
   end
 
   def display
     puts "-----------------------------------------------------"
-    puts "-            GUESS THE CODE MOTHER FUCKER!          -"
+    puts "-     🔐 GUESS THE CODE MOTHER FUCKER! 🔐          -"
     puts "-----------------------------------------------------"
-    @guesses_history.each_with_index do |arr, index|
-      print " "
-      arr.each do |color|
+    @guesses_history.each_with_index do |array, index|
+      puts ""
+      array.each do |color|
         print " "
         print "#{Game::COLOR[color]} "
+        print " "
       end
-      print "                   "
-      # safe iterate hints
+      print " "
       hints_for_row = @hints[index] || []
-      hints_for_row.each do |hint|
-        key = hint.is_a?(Symbol) ? hint : hint.to_s.strip.to_sym
-        symbol = COLOR_HINT[key] || "  " # placeholder si absent
-        print " #{symbol} "
+      hints_for_row.each do |hint_color|
+        hint_color.nil? ? hint_color = :X : hint_color.to_sym
+        print "#{COLOR_HINT[hint_color.to_sym] || 'X'} "
       end
-
-      puts " "
     end
+    puts " "
     puts "-----------------------------------------------------"
 
     puts "Enter the corresponding number: "
@@ -42,5 +40,13 @@ class Board
       print "#{value} =>"
       puts " #{index + 1}"
     end
+  end
+
+  def winner?(hints)
+    count = 0
+    hints.each do |hint|
+      count += 1 if hint == "black"
+    end
+    true if count == 4
   end
 end
